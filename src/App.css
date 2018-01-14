@@ -20,6 +20,15 @@
 
 .App-intro {
   font-size: large;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.block-of-api{
+  padding: 1rem;
+  width: 100%;
 }
 
 @keyframes App-logo-spin {
