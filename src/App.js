@@ -25,35 +25,30 @@ class App extends Component {
 
     window.addEventListener('deviceorientation', _.throttle((deviceorientation) => {
       this.setState(() => ({ deviceorientation }))
-    }, 500), false)
+    }, 2000), false)
 
     window.addEventListener('devicemotion', _.throttle((devicemotion) => {
       this.setState(() => ({ devicemotion }))
-    }, 500), false)
+    }, 2000), false)
 
     window.addEventListener('devicelight', _.throttle((devicelight) => {
       this.setState(() => ({ devicelight }))
-    }, 500), false)
+    }, 2000), false)
 
     window.addEventListener('deviceproximity', _.throttle((deviceproximity) => {
       this.setState(() => ({ deviceproximity }))
-    }, 500))
-    
-    if ( 'AmbientLightSensor' in window ) {
+    }, 2000), false)
+
+    if ('AmbientLightSensor' in window) {
       var sensor = new window.AmbientLightSensor();
-      sensor.onreading = function() {
-        this.setState(() => ({ lightlevel: sensor}))
+      sensor.onreading = function () {
+        this.setState(() => ({ lightlevel: sensor }))
       };
-      sensor.onerror = function(event) {
+      sensor.onerror = function (event) {
         console.log(event.error.name, event.error.message);
       };
       sensor.start();
     }
-
-    // window.addEventListener('lightlevel', _.throttle((lightlevel) => {
-    //   this.setState(() => ({ lightlevel }))
-    // }, 500), false)
-
   }
 
   isBatterySensorInitialized() {
@@ -140,9 +135,22 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Lauri????????????????????</h1>
+          <h1 className="App-title">Browser spypage</h1>
         </header>
         <div className="App-intro">
+
+          <div className="block-of-api">
+            <h2>Navigator</h2>
+            <p>appVersion: {navigator.appVersion}</p>
+            <p>appName : {navigator.appName}</p>
+            <p>appCodeName : {navigator.appCodeName}</p>
+            <p>languages : {navigator.languages.join(', ')}</p>
+            <p>platform : {navigator.platform}</p>
+            <p>product : {navigator.product}</p>
+            <p>userAgent : {navigator.userAgent}</p>
+            <p>vendor : {navigator.vendor}</p>
+            <p>connection.effectiveType : {navigator.connection.effectiveType}</p>
+          </div>
 
           <div className="block-of-api">
             <h2>Battery sensor (Chrome)</h2>
