@@ -23,27 +23,36 @@ class App extends Component {
       })
     }
 
-    if (window.DeviceOrientationEvent) {
-      window.addEventListener('deviceorientation', _.throttle((deviceorientation) => {
-        this.setState(() => ({ deviceorientation }))
-      }, 2000), false)
-    }
+    window.addEventListener('deviceorientation', _.throttle((deviceorientation) => {
+      this.setState(() => ({ deviceorientation }))
+    }, 500), false)
 
-    if (window.DeviceMotionEvent) {
-      window.addEventListener('devicemotion', _.throttle((devicemotion) => {
-        this.setState(() => ({ devicemotion }))
-      }, 2000), false)
-    }
+    window.addEventListener('devicemotion', _.throttle((devicemotion) => {
+      this.setState(() => ({ devicemotion }))
+    }, 500), false)
 
-    window.addEventListener('devicelight', (devicelight) => {
+    window.addEventListener('devicelight', _.throttle((devicelight) => {
       this.setState(() => ({ devicelight }))
-    }, false)
+    }, 500), false)
 
-    if ('ondeviceproximity' in window) {
-      window.addEventListener('deviceproximity', (deviceproximity) => {
-        this.setState(() => ({ deviceproximity }))
-      })
+    window.addEventListener('deviceproximity', _.throttle((deviceproximity) => {
+      this.setState(() => ({ deviceproximity }))
+    }, 500))
+    
+    if ( 'AmbientLightSensor' in window ) {
+      var sensor = new window.AmbientLightSensor();
+      sensor.onreading = function() {
+        this.setState(() => ({ lightlevel: sensor}))
+      };
+      sensor.onerror = function(event) {
+        console.log(event.error.name, event.error.message);
+      };
+      sensor.start();
     }
+
+    // window.addEventListener('lightlevel', _.throttle((lightlevel) => {
+    //   this.setState(() => ({ lightlevel }))
+    // }, 500), false)
 
   }
 
@@ -56,19 +65,23 @@ class App extends Component {
   }
 
   isDeviceorientationSensorInitialized() {
-    return this.state && this.state.deviceorientation
+    return this.state && this.deviceorientation()
   }
 
   isDevicemotionSensorInitialized() {
-    return this.state && this.state.devicemotion
+    return this.state && this.devicemotion()
   }
 
   isDevicelightSensorInitialized() {
-    return this.state && this.state.devicelight
+    return this.state && this.devicelight()
   }
 
   isDeviceproximitySensorInitialized() {
-    return this.state && this.state.deviceproximity
+    return this.state && this.deviceproximity()
+  }
+
+  isLightlevelSensorInitialized() {
+    return this.state && this.lightlevel()
   }
 
   deviceorientation() {
@@ -89,6 +102,10 @@ class App extends Component {
 
   devicelight() {
     return this.state.devicelight
+  }
+
+  lightlevel() {
+    return this.state.lightlevel
   }
 
   deviceproximity() {
@@ -128,7 +145,7 @@ class App extends Component {
         <div className="App-intro">
 
           <div className="block-of-api">
-            <h2>Battery sensor</h2>
+            <h2>Battery sensor (Chrome)</h2>
             <p>Is
               Charging? {this.isBatterySensorInitialized() ? (this.battery().charging ? 'Yes' : 'No') : 'Not initialized yet'}</p>
             <p>chargingTime {this.isBatterySensorInitialized() ? this.battery().chargingTime : 'Not initialized yet'}</p>
@@ -137,7 +154,7 @@ class App extends Component {
           </div>
 
           <div className="block-of-api">
-            <h2>Geo sensor</h2>
+            <h2>Geo sensor (Chrome && FF)</h2>
             <p>Accuracy {this.isGeoSensorInitialized() ? (this.geo().coords.accuracy) : 'Not initialized yet'}</p>
             <p>latitude {this.isGeoSensorInitialized() ? this.geo().coords.latitude : 'Not initialized yet'}</p>
             <p>longitude {this.isGeoSensorInitialized() ? this.geo().coords.longitude : 'Not initialized yet'}</p>
@@ -145,14 +162,14 @@ class App extends Component {
           </div>
 
           <div className="block-of-api">
-            <h2>Devicemotion sensor</h2>
+            <h2>Devicemotion sensor (Chrome && FF)</h2>
             <p>x {this.isDevicemotionSensorInitialized() ? (this.devicemotion().acceleration.x) : 'Not initialized yet'}</p>
             <p>y {this.isDevicemotionSensorInitialized() ? this.devicemotion().acceleration.y : 'Not initialized yet'}</p>
             <p>z {this.isDevicemotionSensorInitialized() ? this.devicemotion().acceleration.z : 'Not initialized yet'}</p>
           </div>
 
           <div className="block-of-api">
-            <h2>Deviceorientation sensor</h2>
+            <h2>Deviceorientation sensor (Chrome && FF)</h2>
             <p>absolute {this.isDeviceorientationSensorInitialized() ? this.deviceorientation().absolute : 'Not initialized yet'}</p>
             <p>alpha {this.isDeviceorientationSensorInitialized() ? this.deviceorientation().alpha : 'Not initialized yet'}</p>
             <p>beta {this.isDeviceorientationSensorInitialized() ? this.deviceorientation().beta : 'Not initialized yet'}</p>
@@ -160,15 +177,20 @@ class App extends Component {
           </div>
 
           <div className="block-of-api">
-            <h2>Devicelight sensor</h2>
+            <h2>Devicelight sensor (FF)</h2>
             <p>value {this.isDevicelightSensorInitialized() ? this.devicelight().value : 'Not initialized yet'}</p>
           </div>
 
           <div className="block-of-api">
-            <h2>Deviceproximity sensor</h2>
+            <h2>Deviceproximity sensor (FF)</h2>
             <p>value {this.isDeviceproximitySensorInitialized() ? this.deviceproximity().value : 'Not initialized yet'}</p>
             <p>min {this.isDeviceproximitySensorInitialized() ? this.deviceproximity().min : 'Not initialized yet'}</p>
             <p>max {this.isDeviceproximitySensorInitialized() ? this.deviceproximity().max : 'Not initialized yet'}</p>
+          </div>
+
+          <div className="block-of-api">
+            <h2>Lightlevel sensor (Chrome) </h2>
+            <p>value {this.isLightlevelSensorInitialized() ? this.lightlevel().illuminance : 'Not initialized yet'}</p>
           </div>
 
 
