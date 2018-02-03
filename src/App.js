@@ -149,7 +149,7 @@ class App extends Component {
             <p>product : {navigator.product}</p>
             <p>userAgent : {navigator.userAgent}</p>
             <p>vendor : {navigator.vendor}</p>
-            <p>connection.effectiveType : {navigator.connection.effectiveType}</p>
+            <p>connection.effectiveType : {navigator.connection ? navigator.connection.effectiveType : 'Not available'}</p>
           </div>
 
           <div className="block-of-api">
