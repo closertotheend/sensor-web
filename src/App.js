@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import _ from 'lodash'
 import logo from './logo.svg'
 import './App.css'
+import objectify from 'geoposition-to-object'
 
 class App extends Component {
   constructor(props) {
@@ -45,10 +46,60 @@ class App extends Component {
         this.setState(() => ({ lightlevel: sensor }))
       };
       sensor.onerror = function (event) {
-        console.log(event.error.name, event.error.message);
+        console.log("No light sensor", event.error.name, event.error.message);
       };
       sensor.start();
     }
+
+    const self = this;
+    setInterval(() => {
+      console.log(self.state)
+      let body = {};
+
+      if (self.isBatterySensorInitialized()) {
+        body.battery = {
+          charging: self.state.battery.charging,
+          chargingTime: self.state.battery.chargingTime,
+          dischargingTime: self.state.battery.dischargingTime,
+          level: self.state.battery.level,
+        }
+      }
+
+      if (self.isGeoSensorInitialized()) {
+        const coords = self.state.geo.coords;
+        body.geo = {
+          accuracy: coords.accuracy,
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          speed: coords.speed,
+        }
+      }
+
+      body.navigator = {
+        accuracy: window.navigator.appVersion,
+        latitude: window.navigator.appName,
+        longitude: window.navigator.appCodeName,
+        languages: window.navigator.languages.join(', '),
+        platform: window.navigator.platform,
+        product: window.navigator.product,
+        userAgent: window.navigator.userAgent,
+        vendor: window.navigator.vendor,
+        effectiveType: window.navigator.connection ? window.navigator.connection.effectiveType : 'Not available',
+      }
+
+      const xhr = new XMLHttpRequest();
+      const url = "http://localhost:3001/";
+      xhr.open("POST", url, true);
+      xhr.setRequestHeader("Content-type", "application/json");
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          var json = JSON.parse(xhr.responseText);
+          console.log(json);
+        }
+      };
+      const data = JSON.stringify(body);
+      xhr.send(data);
+    }, 2000)
   }
 
   isBatterySensorInitialized() {
