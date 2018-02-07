@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
-import logo from './logo.svg'
-import './App.css'
+import logo from './../../logo.svg'
+import './Main.css'
 import objectify from 'geoposition-to-object'
 
-class App extends Component {
+class Main extends Component {
   constructor(props) {
     super(props)
     this.state = {}
@@ -259,4 +259,4 @@ class App extends Component {
   }
 }
 
-export default App
+export default Main
