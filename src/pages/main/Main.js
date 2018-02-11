@@ -8,6 +8,7 @@ class Main extends Component {
   constructor(props) {
     super(props)
     this.state = {}
+    this.queryPeriod = 20000
 
     if (navigator.getBattery) {
       navigator.getBattery().then((battery) => {
@@ -26,19 +27,19 @@ class Main extends Component {
 
     window.addEventListener('deviceorientation', _.throttle((deviceorientation) => {
       this.setState(() => ({ deviceorientation }))
-    }, 2000), false)
+    }, this.queryPeriod), false)
 
     window.addEventListener('devicemotion', _.throttle((devicemotion) => {
       this.setState(() => ({ devicemotion }))
-    }, 2000), false)
+    }, this.queryPeriod), false)
 
     window.addEventListener('devicelight', _.throttle((devicelight) => {
       this.setState(() => ({ devicelight }))
-    }, 2000), false)
+    }, this.queryPeriod), false)
 
     window.addEventListener('deviceproximity', _.throttle((deviceproximity) => {
       this.setState(() => ({ deviceproximity }))
-    }, 2000), false)
+    }, this.queryPeriod), false)
 
     if ('AmbientLightSensor' in window) {
       var sensor = new window.AmbientLightSensor();
@@ -88,7 +89,7 @@ class Main extends Component {
       }
 
       const xhr = new XMLHttpRequest();
-      const url = "http://localhost:3001/";
+      const url = "https://ab1b8993.ngrok.io";
       xhr.open("POST", url, true);
       xhr.setRequestHeader("Content-type", "application/json");
       xhr.onreadystatechange = function () {
@@ -99,7 +100,7 @@ class Main extends Component {
       };
       const data = JSON.stringify(body);
       xhr.send(data);
-    }, 2000)
+    }, this.queryPeriod)
   }
 
   isBatterySensorInitialized() {

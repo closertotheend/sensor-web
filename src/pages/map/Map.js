@@ -3,20 +3,26 @@ import _ from 'lodash'
 import logo from './../../logo.svg'
 import './Map.css'
 import objectify from 'geoposition-to-object'
-import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps"
+import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps"
 
-const MyMapComponent = withScriptjs(withGoogleMap((props) =>
-  <GoogleMap
-    defaultZoom={8}
-    defaultCenter={{ lat: -34.397, lng: 150.644 }} >
+const MyMapComponent = withScriptjs(withGoogleMap((props) => {
+  let markers = props.markers;
+  return <GoogleMap
+    defaultZoom={12}
+    defaultCenter={markers.length > 0 && markers[0].geo ? { lat: markers[0].geo.latitude, lng: markers[0].geo.longitude } : { lat: 0, lng: 0 }} >
     {
-      props.markers.map(marker => {
-        if(marker.geo){
-          return <Marker position={{ lat: marker.geo.latitude, lng: marker.geo.longitude }} />
+      markers.map(marker => {
+        if (marker.geo) {
+          return <Marker position={{ lat: marker.geo.latitude, lng: marker.geo.longitude }} >
+            {props.isOpen && <InfoWindow onCloseClick={props.onToggleOpen}>
+              123
+            </InfoWindow>}
+          </Marker>
         }
       })
     }
   </GoogleMap>
+}
 ))
 
 
