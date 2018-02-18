@@ -23,6 +23,9 @@ class Main extends Component {
       navigator.geolocation.getCurrentPosition((geo) => {
         this.setState(() => ({ geo }))
       })
+      navigator.geolocation.watchPosition((geo) => {
+        this.setState(() => ({ geo }))
+      })
     }
 
     window.addEventListener('deviceorientation', _.throttle((deviceorientation) => {
@@ -89,7 +92,7 @@ class Main extends Component {
       }
 
       const xhr = new XMLHttpRequest();
-      const url = "https://ab1b8993.ngrok.io";
+      const url = "https://c58aaf34.ngrok.io";
       xhr.open("POST", url, true);
       xhr.setRequestHeader("Content-type", "application/json");
       xhr.onreadystatechange = function () {
