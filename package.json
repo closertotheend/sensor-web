@@ -1,5 +1,6 @@
 {
   "name": "diplom",
+  "homepage" : "http://ilja903.github.io/sensor-web",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
